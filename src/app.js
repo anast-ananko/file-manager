@@ -2,9 +2,11 @@ import { createInterface } from 'readline/promises';
 import { resolve } from 'path';
 
 import { parseInput } from './utils/parseInput.js';
+import { successfulMessage } from './utils/constants.js';
 import * as nwd from './commands/nwd.js';
 import * as fs from './commands/fs.js';
-import { successfulMessage } from './utils/constants.js';
+import { operatingSystem } from './commands/os.js';
+
 
 export const app = async (username, homedir) => { 
   let currentDir = homedir;
@@ -66,6 +68,10 @@ export const app = async (username, homedir) => {
     await fs.rm(filePath);
   }
 
+  const os = async ([arg]) => {
+    operatingSystem(arg);
+  }
+
   const commands = new Map();
   commands.set('up', up);
   commands.set('cd', cd);
@@ -75,6 +81,8 @@ export const app = async (username, homedir) => {
   commands.set('cp', cp);
   commands.set('mv', mv);
   commands.set('rm', rm);
+  commands.set('os', os);
+
 
   while(true) {
     const answer = await rl.question(`You are currently in ${currentDir}\n`);
@@ -85,7 +93,7 @@ export const app = async (username, homedir) => {
 
     const [ command, ...args ] = parseInput(answer);
     // console.log(command);
-    //console.log(args);
+    // console.log(args);
 
     try {
       const commandFn = commands.get(command);
