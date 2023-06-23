@@ -6,6 +6,7 @@ import { successfulMessage } from './utils/constants.js';
 import * as nwd from './commands/nwd.js';
 import * as fs from './commands/fs.js';
 import { operatingSystem } from './commands/os.js';
+import { calculateHash } from './commands/hash.js';
 
 
 export const app = async (username, homedir) => { 
@@ -72,6 +73,13 @@ export const app = async (username, homedir) => {
     operatingSystem(arg);
   }
 
+  const hash = async ([path]) => {
+    const filePath = resolve(currentDir, path);
+
+    await calculateHash(filePath);
+  }
+
+
   const commands = new Map();
   commands.set('up', up);
   commands.set('cd', cd);
@@ -82,6 +90,7 @@ export const app = async (username, homedir) => {
   commands.set('mv', mv);
   commands.set('rm', rm);
   commands.set('os', os);
+  commands.set('hash', hash);
 
 
   while(true) {

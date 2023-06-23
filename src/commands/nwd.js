@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { readdir, stat } from 'fs/promises';
 
 import { isExists } from '../utils/isExists.js';
