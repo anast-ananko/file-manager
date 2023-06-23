@@ -1,8 +1,10 @@
 import { createInterface } from 'readline/promises';
+import { resolve } from 'path';
 
 import { parseInput } from './utils/parseInput.js';
-import { joinPath } from './utils/joinPath.js';
 import * as nwd from './commands/nwd.js';
+import * as fs from './commands/fs.js';
+import { successfulMessage } from './utils/constants.js';
 
 export const app = async (username, homedir) => { 
   let currentDir = homedir;
@@ -23,21 +25,56 @@ export const app = async (username, homedir) => {
   });
 
   const up = async () => {
-    currentDir = joinPath(currentDir, '..');
+    currentDir = resolve(currentDir, '..');
   }
 
-  const cd = async (args) => {
-    currentDir = await nwd.cd(currentDir, args);
+  const cd = async ([path]) => {
+    currentDir = await nwd.cd(currentDir, path);
   }
 
   const ls = async () => {
     await nwd.ls(currentDir);
   }
 
+  const cat = async ([path]) => {
+    const filePath = resolve(currentDir, path);
+
+    await fs.cat(filePath);
+  }
+
+  const add = async ([path]) => {
+    const filePath = resolve(currentDir, path);
+
+    await fs.add(filePath);    
+  }
+
+  const cp = async ([source, destination]) => {
+    const sourcePath = resolve(currentDir, source);
+
+    await fs.cp(sourcePath, destination);
+  }
+
+  const mv = async ([source, destination]) => {
+    const sourcePath = resolve(currentDir, source);
+
+    await fs.mv(sourcePath, destination);
+  }
+
+  const rm = async ([path]) => {
+    const filePath = resolve(currentDir, path);
+
+    await fs.rm(filePath);
+  }
+
   const commands = new Map();
   commands.set('up', up);
   commands.set('cd', cd);
   commands.set('ls', ls);
+  commands.set('cat', cat);
+  commands.set('add', add);
+  commands.set('cp', cp);
+  commands.set('mv', mv);
+  commands.set('rm', rm);
 
   while(true) {
     const answer = await rl.question(`You are currently in ${currentDir}\n`);
@@ -48,12 +85,13 @@ export const app = async (username, homedir) => {
 
     const [ command, ...args ] = parseInput(answer);
     // console.log(command);
-    // console.log(args);
+    //console.log(args);
 
     try {
       const commandFn = commands.get(command);
       if (commandFn) {
-        await commandFn(...args);
+        await commandFn(args);
+        console.log(successfulMessage);
       } else {
         console.log(`Unknown command: ${command}`);
       }

@@ -1,11 +1,10 @@
 import { join } from 'path';
 import { readdir, stat } from 'fs/promises';
 
-import { joinPath } from '../utils/joinPath.js';
 import { isExists } from '../utils/isExists.js';
 
 const cd = async (currentDir, path) => {
-  const dirPath = joinPath(currentDir, path);
+  const dirPath = resolve(currentDir, path);
 
   if(!await isExists(dirPath)) {
     throw new Error('This directory does not exist');
