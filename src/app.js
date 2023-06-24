@@ -92,8 +92,7 @@ export const app = async (username, homedir) => {
   const compress = async ([source, destination]) => {
     const sourcePath = resolve(currentDir, source);
     const destinationPath = resolve(currentDir, destination);
-    console.log(sourcePath)
-    console.log(destinationPath)
+
     await brotli.compressFile(sourcePath, destinationPath);
   }
 
