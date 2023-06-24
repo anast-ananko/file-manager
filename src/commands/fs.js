@@ -42,7 +42,7 @@ const cp = async (sourcePath, destinationDir) => {
 	const targetPath = resolve(destinationDir, fileName);
 
 	const sourceStream = createReadStream(sourcePath);
-  const destinationStream = createWriteStream(targetPath);
+    const destinationStream = createWriteStream(targetPath);
 	
   sourceStream.pipe(destinationStream);
 }

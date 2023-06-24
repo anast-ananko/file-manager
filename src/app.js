@@ -7,7 +7,7 @@ import * as nwd from './commands/nwd.js';
 import * as fs from './commands/fs.js';
 import { operatingSystem } from './commands/os.js';
 import { calculateHash } from './commands/hash.js';
-
+import * as brotli from './commands/brotli.js';
 
 export const app = async (username, homedir) => { 
   let currentDir = homedir;
@@ -79,6 +79,21 @@ export const app = async (username, homedir) => {
     await calculateHash(filePath);
   }
 
+  const compress = async ([source, destination]) => {
+    const sourcePath = resolve(currentDir, source);
+    const destinationPath = resolve(currentDir, destination);
+    console.log(sourcePath)
+    console.log(destinationPath)
+    await brotli.compressFile(sourcePath, destinationPath);
+  }
+
+  const decompress = async ([source, destination]) => {
+    const sourcePath = resolve(currentDir, source);
+    const destinationPath = resolve(currentDir, destination);
+
+    await brotli.decompressFile(sourcePath, destinationPath);
+  }
+
 
   const commands = new Map();
   commands.set('up', up);
@@ -91,6 +106,8 @@ export const app = async (username, homedir) => {
   commands.set('rm', rm);
   commands.set('os', os);
   commands.set('hash', hash);
+  commands.set('compress', compress);
+  commands.set('decompress', decompress);
 
 
   while(true) {
