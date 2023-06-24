@@ -33,7 +33,7 @@ const operatingSystem = (arg) => {
 			break;
 
 		default:
-			throw new Error(`Invalid argument ${arg}`);
+			console.log(`Invalid input. Invalid argument ${arg}`);
 	} 
 }
 

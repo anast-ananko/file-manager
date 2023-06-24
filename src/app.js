@@ -8,6 +8,7 @@ import * as fs from './commands/fs.js';
 import { operatingSystem } from './commands/os.js';
 import { calculateHash } from './commands/hash.js';
 import * as brotli from './commands/brotli.js';
+import { validate } from './utils/validate.js';
 
 export const app = async (username, homedir) => { 
   let currentDir = homedir;
@@ -26,6 +27,10 @@ export const app = async (username, homedir) => {
     input: process.stdin,
     output: process.stdout
   });
+
+  const exit = () => {
+    process.exit();
+  }
 
   const up = async () => {
     currentDir = resolve(currentDir, '..');
@@ -100,46 +105,41 @@ export const app = async (username, homedir) => {
     await brotli.decompressFile(sourcePath, destinationPath);
   }
 
-
-  const commands = new Map();
-  commands.set('up', up);
-  commands.set('cd', cd);
-  commands.set('ls', ls);
-  commands.set('cat', cat);
-  commands.set('add', add);
-  commands.set('rn', rn);
-  commands.set('cp', cp);
-  commands.set('mv', mv);
-  commands.set('rm', rm);
-  commands.set('os', os);
-  commands.set('hash', hash);
-  commands.set('compress', compress);
-  commands.set('decompress', decompress);
-
+  const commands = new Map([
+    ['.exit', exit],
+    ['up', up],
+    ['cd', cd],
+    ['ls', ls],
+    ['cat', cat],
+    ['add', add],
+    ['rn', rn],
+    ['cp', cp],
+    ['mv', mv],
+    ['rm', rm],
+    ['os', os],
+    ['hash', hash],
+    ['compress', compress],
+    ['decompress', decompress]
+  ]);
 
   while(true) {
     const answer = await rl.question(`You are currently in ${currentDir}\n`);
 
-    if (answer == '.exit') {
-      process.exit();
-    }
-
     const [ command, ...args ] = parseInput(answer);
     // console.log(command);
-    // console.log(args);
+    //console.log(args.length);
 
-    try {
-      const commandFn = commands.get(command);
-      if (commandFn) {
+    const commandFn = commands.get(command);
+    if (commandFn && validate(command, args)) {
+      try {
         await commandFn(args);
-        console.log(successfulMessage);
-      } else {
-        console.log(`Unknown command: ${command}`);
-      }
-    } catch (error) { 
-      console.log(`Operation failed: ${error.message}`)
-    }    
-
+        // console.log(successfulMessage);
+      } catch (error) { 
+        console.log(`Operation failed: ${error.message}`)
+      }         
+    } else {
+      console.log('Invalid input');
+    }  
   } 
      
 }
