@@ -6,6 +6,7 @@ export const validate = (command, args) => {
       if(args.length === 0) {
         return true;
       }    
+      return false;
 
     case 'cat':
     case 'add':
@@ -16,15 +17,17 @@ export const validate = (command, args) => {
       if(args.length === 1) {
         return true;
       }  
-    
+      return false;
+
     case 'rn':
     case 'cp':
     case 'mv':
-    case 'compess':
-    case 'decompess':         
+    case 'compress':
+    case 'decompress':         
       if(args.length === 2) {
         return true;
       } 
+      return false;
     
     default:
       return false;  

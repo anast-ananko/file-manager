@@ -2,7 +2,6 @@ import { createInterface } from 'readline/promises';
 import { resolve } from 'path';
 
 import { parseInput } from './utils/parseInput.js';
-import { successfulMessage } from './utils/constants.js';
 import * as nwd from './commands/nwd.js';
 import * as fs from './commands/fs.js';
 import { operatingSystem } from './commands/os.js';
@@ -126,14 +125,11 @@ export const app = async (username, homedir) => {
     const answer = await rl.question(`You are currently in ${currentDir}\n`);
 
     const [ command, ...args ] = parseInput(answer);
-    // console.log(command);
-    //console.log(args.length);
 
     const commandFn = commands.get(command);
     if (commandFn && validate(command, args)) {
       try {
         await commandFn(args);
-        // console.log(successfulMessage);
       } catch (error) { 
         console.log(`Operation failed. ${error?.message ? error.message : ''}`)
       }         

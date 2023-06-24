@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream } from 'fs';
 import { createBrotliCompress, createBrotliDecompress } from 'zlib';
-import { pipeline } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { isExists } from '../utils/isExists.js';
 
@@ -13,7 +13,7 @@ const compressFile = async (sourcePath, destinationPath) => {
   const destinationStream = createWriteStream(destinationPath);
   const brotliStream = createBrotliCompress();
 
-	sourceStream.pipe(brotliStream).pipe(destinationStream);
+  await pipeline(sourceStream, brotliStream, destinationStream);
 }
 
 const decompressFile = async (sourcePath, destinationPath) => {
@@ -25,7 +25,7 @@ const decompressFile = async (sourcePath, destinationPath) => {
   const destinationStream = createWriteStream(destinationPath);
   const brotliStream = createBrotliDecompress();
 
-  sourceStream.pipe(brotliStream).pipe(destinationStream);
+  await pipeline(sourceStream, brotliStream, destinationStream);
 }
 
 export { compressFile, decompressFile };
