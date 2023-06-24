@@ -5,6 +5,10 @@ import { basename, resolve, dirname, join } from 'path';
 import { isExists } from '../utils/isExists.js';
 
 const cat = async (filePath) => {
+	if (!await isExists(filePath)) {
+		throw new Error('No such original file');      
+	} 
+
 	const readableStream = createReadStream(filePath, 'utf8');
 
 	readableStream.on("data", (chunk) => {
@@ -37,8 +41,6 @@ const rn = async (filePath, newFilename) => {
 	const directory = dirname(filePath);
 	const newFilePath = join(directory, newFilename);
 
-	console.log(filePath, newFilePath)
-
 	if (await isExists(newFilePath)) {
 		throw new Error('File with that name already exists');      
 	} 
@@ -62,6 +64,10 @@ const cp = async (sourcePath, destinationDir) => {
 	const fileName = basename(sourcePath);
 	const targetPath = resolve(destinationDir, fileName);
 
+	if (await isExists(targetPath)) {
+		throw new Error('File already exists in destination directory');      
+	}  
+
 	const sourceStream = createReadStream(sourcePath);
     const destinationStream = createWriteStream(targetPath);
 	
@@ -80,12 +86,20 @@ const mv = async (sourcePath, destinationDir) => {
 	const fileName = basename(sourcePath);
 	const targetPath = resolve(destinationDir, fileName);
 
+	if (await isExists(targetPath)) {
+		throw new Error('File already exists in destination directory');      
+	}  
+
 	const sourceStream = createReadStream(sourcePath);
 	const destinationStream = createWriteStream(targetPath);
 
 	sourceStream.pipe(destinationStream);
 	
-	await removeFile(sourcePath);
+	try {
+		await removeFile(sourcePath);
+	} catch {
+		throw new Error('Error while deleting file');  
+	}	
 }
 
 const rm = async (filePath) => {
@@ -93,7 +107,11 @@ const rm = async (filePath) => {
     throw new Error('File does not exist');
   } 
 
-  await removeFile(filePath);
+	try {
+		await removeFile(filePath);
+	} catch {
+		throw new Error('Error while deleting file');  
+	}  
 }
 
 export { cat, add, rn, cp, mv, rm };

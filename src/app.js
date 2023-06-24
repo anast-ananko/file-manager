@@ -135,7 +135,7 @@ export const app = async (username, homedir) => {
         await commandFn(args);
         // console.log(successfulMessage);
       } catch (error) { 
-        console.log(`Operation failed: ${error.message}`)
+        console.log(`Operation failed. ${error?.message ? error.message : ''}`)
       }         
     } else {
       console.log('Invalid input');
