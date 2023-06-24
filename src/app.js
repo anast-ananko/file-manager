@@ -51,6 +51,12 @@ export const app = async (username, homedir) => {
     await fs.add(filePath);    
   }
 
+  const rn = async([path, newFilename]) => {
+    const filePath = resolve(currentDir, path);
+
+    await fs.rn(filePath, newFilename);
+  }
+
   const cp = async ([source, destination]) => {
     const sourcePath = resolve(currentDir, source);
 
@@ -101,6 +107,7 @@ export const app = async (username, homedir) => {
   commands.set('ls', ls);
   commands.set('cat', cat);
   commands.set('add', add);
+  commands.set('rn', rn);
   commands.set('cp', cp);
   commands.set('mv', mv);
   commands.set('rm', rm);

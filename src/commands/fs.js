@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream } from 'fs';
-import { writeFile, rm as removeFile } from 'fs/promises';
-import { basename, resolve } from 'path';
+import { writeFile, rename, rm as removeFile } from 'fs/promises';
+import { basename, resolve, dirname, join } from 'path';
 
 import { isExists } from '../utils/isExists.js';
 
@@ -27,6 +27,27 @@ const add = async (filePath) => {
   } catch {
 		throw new Error('Failed to add file');
   }
+}
+
+const rn = async (filePath, newFilename) => {
+	if (!await isExists(filePath)) {
+		throw new Error('No such original file');      
+	} 
+
+	const directory = dirname(filePath);
+	const newFilePath = join(directory, newFilename);
+
+	console.log(filePath, newFilePath)
+
+	if (await isExists(newFilePath)) {
+		throw new Error('File with that name already exists');      
+	} 
+
+	try {
+		await rename(filePath, newFilePath);
+	} catch {
+		throw new Error('Error while renaming file');   
+	}	
 }
 
 const cp = async (sourcePath, destinationDir) => {
@@ -75,4 +96,4 @@ const rm = async (filePath) => {
   await removeFile(filePath);
 }
 
-export { cat, add, cp, mv, rm };
+export { cat, add, rn, cp, mv, rm };
