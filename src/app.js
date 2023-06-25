@@ -2,12 +2,12 @@ import { createInterface } from 'readline/promises';
 import { resolve } from 'path';
 
 import { parseInput } from './utils/parseInput.js';
+import { validate } from './utils/validate.js';
 import * as nwd from './commands/nwd.js';
 import * as fs from './commands/fs.js';
 import { operatingSystem } from './commands/os.js';
 import { calculateHash } from './commands/hash.js';
 import * as brotli from './commands/brotli.js';
-import { validate } from './utils/validate.js';
 
 export const app = async (username, homedir) => { 
   let currentDir = homedir;

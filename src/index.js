@@ -10,4 +10,6 @@ const greeting = () => {
   console.log(`Welcome to the File Manager, ${username}!`);
 }
 
+greeting();
+
 app(username, homedir());
